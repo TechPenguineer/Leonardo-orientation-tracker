@@ -1,19 +1,38 @@
-#include <Arduino.h>
-#define onboard 13
+#include<Wire.h>
+#include<Arduino.h>
 
-void setup() {
-  pinMode(onboard,OUTPUT);
+const int MPU=0x68; 
+int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
+
+void setup(){
+  Wire.begin();
+  Wire.beginTransmission(MPU);
+  Wire.write(0x6B); 
+  Wire.write(0);    
+  Wire.endTransmission(true);
+  Serial.begin(9600);
 }
-
-void loop() 
-{
-  int i;
-  for(i=1; i<0; i++)
-  {
-    Serial.println(i);
-  }
-  digitalWrite(onboard, LOW);
-  delay(1000);
-  digitalWrite(onboard, HIGH);
-  delay(1000);
+void loop(){
+  Wire.beginTransmission(MPU);
+  Wire.write(0x3B);  
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU,12,true);  
+  AcX=Wire.read()<<8|Wire.read();    
+  AcY=Wire.read()<<8|Wire.read();  
+  AcZ=Wire.read()<<8|Wire.read();  
+  GyX=Wire.read()<<8|Wire.read();  
+  GyY=Wire.read()<<8|Wire.read();  
+  GyZ=Wire.read()<<8|Wire.read();  
+  
+  Serial.print("Accelerometer: ");
+  Serial.print("X = "); Serial.print(AcX);
+  Serial.print(" | Y = "); Serial.print(AcY);
+  Serial.print(" | Z = "); Serial.println(AcZ); 
+  
+  Serial.print("Gyroscope: ");
+  Serial.print("X = "); Serial.print(GyX);
+  Serial.print(" | Y = "); Serial.print(GyY);
+  Serial.print(" | Z = "); Serial.println(GyZ);
+  Serial.println(" ");
+  delay(333);
 }
