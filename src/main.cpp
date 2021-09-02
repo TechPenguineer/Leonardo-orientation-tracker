@@ -6,7 +6,8 @@ void setup() {
 
 void loop() 
 {
-
-    Serial.print("E");
-
+  digitalWrite(onboard, LOW);
+  delay(1000);
+  digitalWrite(onboard, HIGH);
+  delay(1000);
 }
